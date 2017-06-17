@@ -12,8 +12,8 @@
 	<div class="description">
 		<div class="menu">
 			<a href="what_can_i_do_with_it.html">What can I do with it?</a> |
-			<a href="index.html">APIs Reference</a> |
-			<a href="https://www.beyond-reality-face.com" target="_blank">beyond-reality-face.com</a>
+			<a href="index.html">API Reference</a> |
+			<a href="https://github.com/Tastenkunst" target="_blank">BRFv4 on Github</a>
 		</div>
 	</div>
 	<div class="spacer"></div>
@@ -279,11 +279,8 @@
 			<dt class="parameter">BRFMode.POINT_TRACKING</dt>
 			<dd>This mode will skip on face detection and tracking and only perform point tracking. You can perform
 				face tracking and point tracking simultaneously by choosing FACE_TRACKING as mode.</dd>
-
 		</dl>
-
 		<br>
-
 		<dl>
 			<dt class="parameter">mode (String)</dt>
 			<dd>either BRFMode.FACE_DETECTION, BRFMode.FACE_TRACKING or BRFMode.POINT_TRACKING
@@ -298,96 +295,112 @@
 	<div class="description">
 
 		<p class="function_name" id="setFaceDetectionParams">setFaceDetectionParams( int minWidth, int maxWidth, int stepSize, int minMergeNeighbors ) : void</p>
-		<p class="function_description"></p>
+		<p class="function_description">
+			Internally BRFv4 uses a DYNx480 (landscape) or 480xDYN (portrait) image for it's analysis. So 480px is the
+			base size that every other input size compares to (eg. 1280x720 -> 854x480).
+			<br><br>
+
+			The minimum detectable face size for the following resolutions are:
+		</p>
+		<ul style="margin: 10px;">
+		<li style="margin-left: 15px;">&nbsp;&nbsp;640 x &nbsp;&nbsp;480: 24px ( &nbsp;480 / 480 = 1.00 * 24 = 24) (base)</li>
+		<li style="margin-left: 15px;">1280 x &nbsp;&nbsp;720: 36px ( &nbsp;720 / 480 = 1.50 * 24 = 36)</li>
+		<li style="margin-left: 15px;">1920 x 1080: 54px (1080 / 480 = 2.25 * 24 = 54)</li>
+		</ul>
+		<p class="function_description">
+			Also: faces (blue) are only detected at step sizes multiple of 12.<br>
+			So the actual face detection layers (sizes) are:
+		</p>
+			<ul style="margin: 10px;">
+				<li style="margin-left: 15px;">&nbsp;&nbsp;640 x &nbsp;&nbsp;480: 24, 36, &nbsp;&nbsp;48, &nbsp;&nbsp;60, &nbsp;&nbsp;72, ..., &nbsp;&nbsp;456, &nbsp;&nbsp;468, &nbsp;&nbsp;480</li>
+				<li style="margin-left: 15px;">1280 x &nbsp;&nbsp;720: 36, 54, &nbsp;&nbsp;72, &nbsp;&nbsp;90, 108, ..., &nbsp;&nbsp;684, &nbsp;&nbsp;702, &nbsp;&nbsp;720</li>
+				<li style="margin-left: 15px;">1920 x 1080: 54, 81, 108, 135, 162, ..., 1026, 1053, 1080</li>
+			</ul>
+
+		<p class="function_description">
+			Detected faces (blue) get merged (yellow) if they are<br>
+			+ roughly placed in the same location,<br>
+			+ roughly the same size and<br>
+			+ have at least minMergeNeighbors of other rectangle in the same spot.
+		</p>
 		<dl>
-			<dt class="parameter">minWidth</dt>
-			<dd></dd>
+			<dt class="parameter">minWidth (int)</dt>
+			<dd>The starting/minimum face size (in pixel) that the algorithm is looking for.</dd>
 
-			<dt class="parameter">maxWidth</dt>
-			<dd></dd>
+			<dt class="parameter">maxWidth (int)</dt>
+			<dd>The end/maximum face size (in pixel) that the algorithm is looking for.</dd>
 
-			<dt class="parameter">stepSize</dt>
-			<dd></dd>
+			<dt class="parameter">stepSize (int)</dt>
+			<dd>Minimum step size is 12, must be a multiple of 12 (12, 24, 26 etc.). By increasing the stepSize you skip detection layers and make the face detection less accurate, but perform faster.</dd>
 
-			<dt class="parameter">minMergeNeighbors</dt>
-			<dd></dd>
+			<dt class="parameter">minMergeNeighbors (int)</dt>
+			<dd>Number of candidates (blue) necessary in one spot to merge all of them into a "detected face" (yellow).</dd>
 		</dl>
 		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
 		<br>
 		<br>
 	</div>
 
+	<div class="description">
 
+		<p class="function_name" id="setFaceDetectionRoi">setFaceDetectionRoi( Rectangle roi ) : void</p>
+		<p class="function_description">
+			Sets the region of interest, the area within the image data where the face detection shall do its work.
+		</p>
+		<dl>
+			<dt class="parameter">roi (Rectangle)</dt>
+			<dd>A rectangular area within the image.</dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="getAllDetectedFaces">getAllDetectedFaces( ) : Vector&lt;Rectangle&gt;</p>
+		<p class="function_description">
+			Returns all face candidates (blue) that were detected during the last update.
+		</p>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="getMergedDetectedFaces">getMergedDetectedFaces( ) : Vector&lt;Rectangle&gt;</p>
+		<p class="function_description">
+			Returns all actual merged/detected faces (yellow) of the last update call.
+		</p>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<h4>face tracking</h4>
+
+	<div class="description">
+
+		<p class="function_name" id="setNumFacesToTrack">setNumFacesToTrack( int numFaces ) : void</p>
+		<p class="function_description">
+			By default BRFv4 set the number of faces to track to 1 (single face tracking). To track more than one face
+			increase this value. Be aware that increasing the number of faces to track will hurt the performance with
+			every single face you add.
+		</p>
+		<dl>
+			<dt class="parameter">numFaces (int)</dt>
+			<dd>The number of faces you want to track, usually 1.</dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
 
 	<!--
 
 
 
-
-		<p class="function_name" id="setFaceDetectionParams">void setFaceDetectionParams(int minFaceSize, int maxFaceSize, int stepSize, int minMergeNeighbors)</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="parameter">minFaceSize</dt>
-			<dd>description</dd>
-
-			<dt class="parameter">maxFaceSize</dt>
-			<dd>description</dd>
-
-			<dt class="parameter">stepSize</dt>
-			<dd>description</dd>
-
-			<dt class="parameter">minMergeNeighbors</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<p class="function_name" id="setFaceDetectionRoi">void setFaceDetectionRoi(Rectangle roi)</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="parameter">roi</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<p class="function_name" id="getAllDetectedFaces">Vector&lt;Rectangle&gt; getAllDetectedFaces()</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="ausgabe">Vector&lt;Rectangle&gt;</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<p class="function_name" id="getMergedDetectedFaces">Vector&lt;Rectangle&gt; getMergedDetectedFaces()</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="ausgabe">Vector&lt;Rectangle&gt;</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<br/>
-
-		<p>//<br/>
-			// Face Tracking<br/>
-			//
-		</p>
-		<br/>
 
 		<p class="function_name" id="setNumFacesToTrack">void setNumFacesToTrack(int numFaces)</p>
 		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
