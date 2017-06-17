@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/docs.css">
+	<title>Beyond Reality Face - BRFv4 - What you can do with it.</title>
+</head>
+<body>
+
+<div id="wrapper">
+
+	<div class="description">
+		<div class="menu">
+			<a href="what_can_i_do_with_it.html">What can I do with it?</a> |
+			<a href="index.html">APIs Reference</a> |
+			<a href="https://www.beyond-reality-face.com" target="_blank">beyond-reality-face.com</a>
+		</div>
+	</div>
+	<div class="spacer"></div>
+
+	<h1>BRFv4 - What you can do with it.</h1>
+	<h2>Overview</h2>
+
+	<div class="description" id="_top">
+		<p>
+			Beyond Reality Face is a multi face tracker. It detects faces and tracks them continuously. It is a two step
+			process using face detection and face tracking. This page shows what you can do with BRFv4 and what results
+			to expect from each step.
+		</p>
+	</div>
+
+	<div class="spacer"></div>
+	<h2>face detection</h2>
+	<h4>(1st step)</h4>
+
+	<div class="description">
+		<p>
+			It scans the image systematically to detect faces. A found candidate is marked by a (blue) rectangle. This
+			produces lots of candidates and if enough (blue) rectangles are located in the same spot, this spot is marked
+			as an actual found face by merging the blue rectangles into a yellow one.
+		</p>
+	</div>
+
+	<div class="images ">
+		<figure>
+			<img src="assets/wcidwi/face_detection_1.jpg" alt="Many blue candidates are merged into a yellow rectangle." />
+			<figcaption>Many blue candidates are merged into a single yellow rectangle.</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/face_detection_2.jpg" alt="Restrict the region of interest (green rectangle) to set a specific detection area." />
+			<figcaption>Restrict the region of interest (green rectangle) to set a specific detection area.</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/face_detection_3.jpg" alt="Detect small faces." />
+			<figcaption>Detect small faces.</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/face_detection_4.jpg" alt="Detect large faces." />
+			<figcaption>Detect large faces.</figcaption>
+		</figure>
+		<div class="clear_float"></div>
+	</div>
+
+	<div class="description">
+		<p>
+			A merged (yellow) rectangle is used as a starting point for the actual face tracking.
+		</p>
+	</div>
+
+	<div class="spacer"></div>
+	<h2>face tracking</h2>
+	<h4>(2nd step)</h4>
+
+	<div class="description">
+		<p>
+			A detected face is being analysed in detail and provides facial data: 68 facial landmarks, eg. the location of
+			eyes, eyebrows, nose and mouth, also the 3D position, scale and rotation.
+		</p>
+	</div>
+
+	<div class="images">
+		<figure>
+			<img src="assets/wcidwi/face_tracking_0.jpg" alt="Provides the location of 68 facial landmarks." />
+			<figcaption>Provides the location of 68 facial landmarks (points).</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/face_tracking_1.jpg" alt="It is accurate even at an angle." />
+			<figcaption>It is accurate even at an angle.</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/extended_shape.jpg" alt="It is possible to calculate 6 additional points that also cover the forehead as well as..." />
+			<figcaption>It is possible to calculate 6 additional points that also cover the forehead (estimated, not tracked) or ...</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/candide_overlay.jpg" alt="... visualize the candide3 model based on the 3D position values." />
+			<figcaption>... visualize the candide3 model based on the 3D position values.</figcaption>
+		</figure>
+		<div class="clear_float"></div>
+	</div>
+
+	<div class="spacer"></div>
+	<div class="description">
+		<p>
+			These 68 facial landmarks may be utilized in many different ways, eg. ...
+		</p>
+	</div>
+
+	<div class="images">
+		<figure>
+			<img src="assets/wcidwi/smile_detection.jpg" alt="smile detection" />
+			<figcaption>... smile detection ...</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/yawn_detection.jpg" alt="yawn detection" />
+			<figcaption>... yawn detection ...</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/blink_detection.jpg" alt="face tracking: blink detection" />
+			<figcaption>... (static) blink detection ...</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/color_libs.jpg" alt="face tracking: color triangles, eg. libs" />
+			<figcaption>... color triangles, eg. libs ...</figcaption>
+		</figure>
+		<div class="clear_float"></div>
+	</div>
+
+	<div class="spacer"></div>
+	<div class="description">
+		<p>
+			... or for a bit more advanced stuff, like ...
+		</p>
+	</div>
+
+	<div class="images">
+		<figure>
+			<img src="assets/wcidwi/mask_overlay.jpg" alt="Place image masks over a face." />
+			<figcaption>... place masks on top of a face ...</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/glasses_overlay.jpg" alt="Place other masks over a face." />
+			<figcaption>... place other image masks on top of a face ...</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/glasses_3d.jpg" alt="Place 3d objects on a face." />
+			<figcaption>... place 3d objects on top of a face ...</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/face_texture.jpg" alt="Place a face texture, using UV mapping." />
+			<figcaption>... place a face texture, using UV mapping ...</figcaption>
+		</figure>
+		<div class="clear_float"></div>
+	</div>
+
+	<div class="spacer"></div>
+	<h2>point tracking</h2>
+	<h4>(optical flow, optional)</h4>
+
+	<div class="description">
+		<p>
+			Apart from tracking the face you can also track points.
+		</p>
+	</div>
+
+	<div class="images">
+		<figure>
+			<img src="assets/wcidwi/point_tracking.jpg" alt="Track lots of points in a camera stream." />
+			<figcaption>Track lots of points in a camera stream.</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/wcidwi/point_face_tracking.jpg" alt="Track it simultaneously with face tracking." />
+			<figcaption>Track them simultaneously with face tracking.</figcaption>
+		</figure>
+		<div class="clear_float"></div>
+	</div>
+
+	<div class="spacer"></div>
+	<div class="description">
+		<a class="link_top" href="#wrapper">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+	<div class="spacer"></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/docs.css">
+	<title>Beyond Reality Face - BRFv4 - API reference</title>
+</head>
+<body>
+
+<div id="wrapper">
+
+	<div class="description">
+		<div class="menu">
+			<a href="what_can_i_do_with_it.html">What can I do with it?</a> |
+			<a href="index.html">APIs Reference</a> |
+			<a href="https://www.beyond-reality-face.com" target="_blank">beyond-reality-face.com</a>
+		</div>
+	</div>
+	<div class="spacer"></div>
+
+	<h1>BRFv4 - API Reference</h1>
+	<h2>Overview</h2>
+
+	<div class="description">
+		<p>
+			The BRFv4 API is the same on all platforms. Everything described on this page can be applied to Javascript, Actionscript 3 or C++.<br><br>
+			Before you read this API, please take a look at what you can do with BRFv4, especially what results to expect from
+			face detection and face tracking (<a href="what_can_i_do_with_it.html">link: What can I do with it?</a>).<br><br>
+			There are two main classes: BRFManager and BRFFace.<br><br>
+			Going forward "roi" means "region of interest", the rectangular area of an image an algorithm works in.
+		</p>
+	</div>
+
+	<div class="spacer"></div>
+
+	<h2 id="hl_BRFManager">BRFManager</h2>
+
+	<h4>(control flow)</h4>
+
+	<div class="description functionlist">
+
+		<p><a href="#init">init( Rectangle imageDataSize, Rectangle imageRoi, String appId ) : void</a></p>
+		<p><a href="#update">update( Bitmap imageData ) : void</a></p>
+		<p><a href="#reset">reset() : void</a></p>
+		<p><a href="#getMode">getMode() : String</a></p>
+		<p><a href="#setMode">setMode( String mode ) : void</a></p>
+	</div>
+
+	<h4>(face detection)</h4>
+
+	<div class="description functionlist">
+
+		<p><a href="#setFaceDetectionParams">setFaceDetectionParams( int minWidth, int maxWidth, int stepSize, int minMergeNeighbors ) : void</a></p>
+		<p><a href="#setFaceDetectionRoi">setFaceDetectionRoi( Rectangle roi ) : void</a></p>
+		<p><a href="#getAllDetectedFaces">getAllDetectedFaces() : Vector&lt;Rectangle&gt;</a></p>
+		<p><a href="#getMergedDetectedFaces">getMergedDetectedFaces() : Vector&lt;Rectangle&gt;</a></p>
+	</div>
+
+	<h4>(face tracking)</h4>
+
+	<div class="description functionlist">
+
+		<p><a href="#setNumFacesToTrack">setNumFacesToTrack( int numFaces ) : void</a></p>
+		<p><a href="#setFaceTrackingStartParams">setFaceTrackingStartParams( double minWidth, double maxWidth, double rx, double ry, double rz ) : void</a></p>
+		<p><a href="#setFaceTrackingResetParams">setFaceTrackingResetParams( double minWidth, double maxWidth, double rx, double ry, double rz ) : void</a></p>
+		<p><a href="#getFaces">getFaces() : Vector&lt;BRFFace&gt;</a></p>
+	</div>
+
+	<h4>(point tracking - optical flow)</h4>
+
+	<div class="description functionlist">
+
+		<p><a href="#setOpticalFlowParams">setOpticalFlowParams( int patchSize, int numLevels, int numIterations, double error ) : void</a></p>
+		<p><a href="#addOpticalFlowPoints">addOpticalFlowPoints( Vector&lt;Point&gt; pointArray ) : void</a></p>
+		<p><a href="#getOpticalFlowCheckPointsValidBeforeTracking">getOpticalFlowCheckPointsValidBeforeTracking() : Boolean</a></p>
+		<p><a href="#setOpticalFlowCheckPointsValidBeforeTracking">setOpticalFlowCheckPointsValidBeforeTracking( Boolean value ) : void</a></p>
+		<p><a href="#getOpticalFlowPoints">getOpticalFlowPoints() : Vector&lt;Point&gt;</a></p>
+		<p><a href="#getOpticalFlowPointStates">getOpticalFlowPointStates() : Vector&lt;Boolean&gt;</a></p>
+	</div>
+
+	<div class="spacer"></div>
+
+	<h2 id="hl_BRFFace">BRFFace</h2>
+
+	<div class="spacer"></div>
+
+	<div class="description functionlist">
+		<p><a href="#lastState">lastState : String</a></p>
+		<p><a href="#state">state : String</a></p>
+		<p><a href="#nextState">nextState : String</a></p>
+		<p><a href="#vertices">vertices : float[]</a></p>
+		<p><a href="#triangles">triangles : int[]</a></p>
+		<p><a href="#points">points : Vector&lt;Point&gt;</a></p>
+		<p><a href="#bounds">bounds : Rectangle</a></p>
+		<p><a href="#refRect">refRect : Rectangle</a></p>
+		<p><a href="#candideVertices">candideVertices : float[]</a></p>
+		<p><a href="#candideTriangles">candideTriangles : int[]</a></p>
+		<p><a href="#scale">scale : float</a></p>
+		<p><a href="#translationX">translationX : float</a></p>
+		<p><a href="#translationY">translationY : float</a></p>
+		<p><a href="#rotationX">rotationX : float</a></p>
+		<p><a href="#rotationY">rotationY : float</a></p>
+		<p><a href="#rotationZ">rotationZ : float</a></p>
+	</div>
+
+	<div class="spacer"></div>
+
+	<h2>BRFManager</h2>
+
+	<div class="spacer"></div>
+
+	<div class="description">
+		<p>
+			BRFManager controls everything. First you need to call:
+			<br><br>
+
+			<b>init( ... )</b>
+			<br><br>
+
+			Based on the image size the SDK sets reasonable default parameters to start a single face tracking,
+			but you can change any parameter once BRFv4 is ready. Keep in mind that most parameters are pixel values
+			and you need to adjust parameters based on the image data size that you put in, eg.
+			<br><br>
+
+			<b>setFaceDetectionParams( int minWidth, int maxWidth, int stepSize, int minMergeNeighbors ) : void</b>
+			<br><br>
+
+			If you use a 640x480 camera resolution the trackable face size is 480 pixel at maximum.<br>A reasonable minimum would be 25% of
+			that max size, which is 120 pixel.
+			<br><br>
+
+			For a 1920x1080 resolution the trackable face size is 1080 pixel and 25% of that is 270 pixel.
+			<br><br>
+
+			That's why the examples use percentages for all areas and sizes. This makes sure that the camera resolution can easily be changed.
+			<br><br>
+
+			Once everything is set up you need to update the image data before calling:
+			<br><br>
+
+			<b>update( ... )</b>
+			<br><br>
+
+			BRFv4 tries to detect a face. If a face was detected BRFv4 immediately starts the face tracking based on it.
+			<br><br>
+
+			Face Detection operates globally. That's why BRFManager and not BRFFace got the result functions:
+			<br><br>
+
+			<b>getAllDetectedFaces() : Vector&lt;Rectangle&gt;</b><br>
+			<b>getMergedDetectedFaces() : Vector&lt;Rectangle&gt;</b>
+			<br><br>
+
+			The detailed face tracking data can be retrieved by calling:
+			<br><br>
+
+			<b>getFaces() : Vector&lt;BRFFace&gt;</b><br><br>
+
+			which gives you a list of BRFFaces with a length based on your setting of:
+			<br><br>
+
+			<b>setNumFacesToTrack( int numFaces )</b>
+			<br><br>
+
+			And that's all about it. Init, set parameters, and continuously update. Please refer to the example packages
+			for more information on implementation details for your specific platform.
+		</p>
+	</div>
+
+	<h4>control flow</h4>
+
+	<div class="description">
+
+		<p class="function_name" id="init"><b>init( Rectangle imageDataSize, Rectangle imageRoi, String appId ) : void</b></p>
+		<p class="function_description">
+			This function is the starting point.
+			<br><br>
+
+			It tells BRFv4 what image data size it should expect, on which area to operate and what your appId is.
+			<br><br>
+			If you want to switch the image data and thus need to change the image data size, just call init() again
+			to reinit BRFv4.<br><b>Don't create a new BRFManager! Reuse a single instance.</b><br><br>
+
+			When you first call init() a license check is performed. It's a single server call. If it fails in the trial version
+			BRFv4 will stop working after about 1 to 2 minutes. The commercial version is fail safe,
+			which means that even if no connection to the license server can be established, BRFv4 will still work.
+			Apart from that BRFv4 works fully on the client side.
+		</p>
+		<dl>
+			<dt class="parameter">imageDataSize (Rectangle)</dt>
+			<dd>The size of the image data you put in.<br><br>For a 640x480 camera resolution you need an imageDataSize of
+				Rectangle(0, 0, 640, 480) or for a mobile portrait camera resolutions you will need eg. Rectangle(0, 0, 480, 640).</dd>
+
+
+			<dt class="parameter">imageRoi (Rectangle)</dt>
+			<dd>The area within imageDataSize that you want to analyse. Usually you want to analyse the whole image, but
+				sometimes you only need a part of it and restrict the area.<br><br>For a 640x480 camera resolution you will
+				want to set the roi at the same size as the imageDataSize: Rectangle(0, 0, 640, 480). But maybe you want to
+				restrict it to the center, eg. Rectangle(80, 0, 480, 480), this would restrict the analysed area from
+				xStart = 80 to xEnd = 80 + 480 = 560.</dd>
+
+			<dt class="parameter">appId (String)</dt>
+			<dd>Choose your own appId (minimum length is 8 characters). In our examples we usually put something in like
+				"com.tastenkunst.brfv4.as3.examples". Create your own appId using your reversed company domain.</dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="update"><b>update( Bitmap imageData ) : void</b></p>
+		<p class="function_description">
+			This function does the tracking job. It operates in either of the three BRFModes.
+			<br><br>
+
+			In C++ implementations, eg. OpenCV (camera handling) or iOS, you need to update the imageData on your own before calling update.
+			<br><br>
+
+			All other platforms have their known image containers and BRFv4 is already set up to deal with those.
+			<br><br>
+
+			The results can be retrieved after calling update() as arrays of Rectangle or BRFFace:
+			<br><br>
+
+			<b>getAllDetectedFaces() : Vector&lt;Rectangle&gt;</b><br>
+			<b>getMergedDetectedFaces() : Vector&lt;Rectangle&gt;</b><br>
+			<b>getFaces() : Vector&lt;BRFFace&gt;</b><br><br>
+		</p>
+		<dl>
+			<dt class="parameter">imageData (a platform dependent image data)</dt>
+			<dd>This is platform dependent. In C++ implementations, eg. OpenCV (camera handling) or iOS, you need to update
+				the imageData on your own before calling update. All other platforms have their known image containers and
+				BRFv4 is already set up to deal with those, eg. Android(Java): Bitmap, AS3: BitmapData etc.</dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="reset">reset() : void</p>
+		<p class="function_description">
+			All face trackers reset and start over by performing face detection. Also all point tracking points are removed.
+		</p>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="getMode">getMode() : String</p>
+		<p class="function_description">
+			Returns the BRFMode that is currently set.
+		</p>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="setMode">setMode(String mode) : void</p>
+		<p class="function_description">
+			Sets one of the three modes from BRFMode:
+		</p>
+
+		<dl>
+			<dt class="parameter">BRFMode.FACE_DETECTION</dt>
+			<dd>This mode will only perform the face detection part and skip the detailed analysis.</dd>
+
+			<dt class="parameter">BRFMode.FACE_TRACKING</dt>
+			<dd>This is the usual mode for face tracking. It performs face detection to find a face and then tracks
+				the facial features in details.</dd>
+
+			<dt class="parameter">BRFMode.POINT_TRACKING</dt>
+			<dd>This mode will skip on face detection and tracking and only perform point tracking. You can perform
+				face tracking and point tracking simultaneously by choosing FACE_TRACKING as mode.</dd>
+
+		</dl>
+
+		<br>
+
+		<dl>
+			<dt class="parameter">mode (String)</dt>
+			<dd>either BRFMode.FACE_DETECTION, BRFMode.FACE_TRACKING or BRFMode.POINT_TRACKING
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<h4>face detection</h4>
+
+	<div class="description">
+
+		<p class="function_name" id="setFaceDetectionParams">setFaceDetectionParams( int minWidth, int maxWidth, int stepSize, int minMergeNeighbors ) : void</p>
+		<p class="function_description"></p>
+		<dl>
+			<dt class="parameter">minWidth</dt>
+			<dd></dd>
+
+			<dt class="parameter">maxWidth</dt>
+			<dd></dd>
+
+			<dt class="parameter">stepSize</dt>
+			<dd></dd>
+
+			<dt class="parameter">minMergeNeighbors</dt>
+			<dd></dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+
+
+	<!--
+
+
+
+
+		<p class="function_name" id="setFaceDetectionParams">void setFaceDetectionParams(int minFaceSize, int maxFaceSize, int stepSize, int minMergeNeighbors)</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="parameter">minFaceSize</dt>
+			<dd>description</dd>
+
+			<dt class="parameter">maxFaceSize</dt>
+			<dd>description</dd>
+
+			<dt class="parameter">stepSize</dt>
+			<dd>description</dd>
+
+			<dt class="parameter">minMergeNeighbors</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="setFaceDetectionRoi">void setFaceDetectionRoi(Rectangle roi)</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="parameter">roi</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="getAllDetectedFaces">Vector&lt;Rectangle&gt; getAllDetectedFaces()</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="ausgabe">Vector&lt;Rectangle&gt;</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="getMergedDetectedFaces">Vector&lt;Rectangle&gt; getMergedDetectedFaces()</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="ausgabe">Vector&lt;Rectangle&gt;</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<br/>
+
+		<p>//<br/>
+			// Face Tracking<br/>
+			//
+		</p>
+		<br/>
+
+		<p class="function_name" id="setNumFacesToTrack">void setNumFacesToTrack(int numFaces)</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="parameter">numFaces</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="setFaceTrackingStartParams">void setFaceTrackingStartParams(double startMinFaceWidth, double startMaxFaceWidth, double startRotationX, double startRotationY, double startRotationZ)</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="parameter">startMinFaceWidth</dt>
+			<dd>description</dd>
+			<dt class="parameter">startMaxFaceWidth</dt>
+			<dd>description</dd>
+			<dt class="parameter">startRotationX</dt>
+			<dd>description</dd>
+			<dt class="parameter">startRotationY</dt>
+			<dd>description</dd>
+			<dt class="parameter">startRotationZ</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="setFaceTrackingResetParams">void setFaceTrackingResetParams(double resetMinFaceWidth, double resetMaxFaceWidth, double resetRotationX, double resetRotationY, double resetRotationZ)</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="parameter">resetMinFaceWidth</dt>
+			<dd>description</dd>
+			<dt class="parameter">resetMaxFaceWidth</dt>
+			<dd>description</dd>
+			<dt class="parameter">resetRotationX</dt>
+			<dd>description</dd>
+			<dt class="parameter">resetRotationY</dt>
+			<dd>description</dd>
+			<dt class="parameter">resetRotationZ</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<br/>
+
+		<p class="function_name" id="getFaces">Vector&lt;BRFFace&gt; getFaces()</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="ausgabe">Vector&lt;BRFFace&gt;</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<br/>
+
+		<p>//<br/>
+			// Optical Flow<br/>
+			//
+		</p>
+		<br/>
+
+		<p class="function_name" id="setOpticalFlowParams">void setOpticalFlowParams(int patchSize, int numLevels, int numIterations, double error)</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="parameter">patchSize</dt>
+			<dd>description</dd>
+			<dt class="parameter">numLevels</dt>
+			<dd>description</dd>
+			<dt class="parameter">numIterations</dt>
+			<dd>description</dd>
+			<dt class="parameter">error</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="getOpticalFlowCheckPointsValidBeforeTracking">boolean getOpticalFlowCheckPointsValidBeforeTracking()</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="ausgabe">boolean</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="setOpticalFlowCheckPointsValidBeforeTracking">void setOpticalFlowCheckPointsValidBeforeTracking(boolean value)</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="parameter">value</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="addOpticalFlowPoints">void addOpticalFlowPoints(Vector&lt;Point&gt; pointArray)</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="parameter">pointArray</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<br/>
+
+		<p class="function_name" id="getOpticalFlowPoints">Vector&lt;Point&gt; getOpticalFlowPoints()</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="ausgabe">Vector&lt;Point&gt;</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="getOpticalFlowPointStates">Vector&lt;Boolean&gt; getOpticalFlowPointStates()</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<dl>
+			<dt class="ausgabe">Vector&lt;Boolean&gt;</dt>
+			<dd>description</dd>
+		</dl>
+		<br/>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<br/>
+		<br/>
+
+		<p>and for the facial data:</p>
+		<br/>
+
+		<h3>BRFFace</h3>
+
+		<p class="function_name" id="lastState">String lastState; <span>&emsp;&emsp;// see BRFState</span></p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="state">String state;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="nextState">String nextState;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<br/>
+
+		<p class="function_name" id="vertices">float[] vertices; <span>&emsp;&emsp;[x, y, x, y, ..., x, y] // length: 68 * 2</span></p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="triangles">int[] triangles;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="points">Vector&lt;Point&gt; points; <span>&emsp;&emsp;// same as vertices, but [{x, y}, {x, y}, ..., {x, y}] // length: 68</span></p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="bounds">Rectangle bounds;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="refRect">Rectangle refRect;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<br/>
+
+		<p class="function_name" id="candideVertices">float[] candideVertices;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="candideTriangles">int[] candideTriangles;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<br/>
+
+		<p class="function_name" id="scale">float scale;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="translationX">float translationX;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="translationY">float translationY;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="rotationX">float rotationX;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="rotationY">float rotationY;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>
+
+		<p class="function_name" id="rotationZ">float rotationZ;</p>
+		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+		<br/>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br/>
+		<br/>
+		<br/>-->
+
+	<div class="spacer"></div>
+	<div class="description">
+		<a class="link_top" href="#wrapper">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+	<div class="spacer"></div>
+</div>
+</body>
+</html>

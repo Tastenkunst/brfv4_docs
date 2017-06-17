@@ -1,0 +1,63 @@
+
+/* widths and heights */
+
+html, body      { width: 100%;              height: calc(100% - 10px); }
+div             { width: calc(100% - 10px); max-width: 980px; display: block; }
+h1, h2, h3, h4  {                           max-width: 980px; }
+figure          { width: calc(50% - 10px);  max-width: 640px; }
+figure > img    { width: 100%; }
+figcaption      { width: 100%; }
+.spacer         { width: calc(100% - 10px); min-height: 28px; }
+.description    { width: calc(100% - 10px); min-height: 28px; }
+
+@media screen and (max-width: 640px) {
+    figure      { width: calc(100% - 10px); }
+}
+
+#wrapper        {                           max-width: 1000px;}
+
+/* margin and padding */
+
+*               { margin: 0; padding: 0; }
+
+#wrapper        { margin-top:  0;   margin-bottom: 0; margin-left: auto; margin-right: auto; }
+div             { margin:      5px; }
+h1, h2, h3, h4  { margin:      5px; padding-top: 5px; padding-bottom: 5px; }
+p               { padding:    10px; }
+dt              { margin-top: 15px; margin-left: 15px; }
+dd              { margin-top:  5px; margin-left: 30px; margin-right: 10px; }
+figure          { margin: 5px; float: left; }
+.menu           { padding-top: 4px; padding-bottom: 4px; }
+
+.clear_float    { clear: both; }
+
+/* background colors */
+
+html, body                      { background-color: #ffffff; }
+h1, h2, h3, h4                  { background-color: #fafafa; }
+.images                         { background-color: #fafafa; }
+.spacer                         { background-color: #fafafa; }
+.description                    { background-color: #e7e7e7; }
+.description p:nth-child(odd)   { background-color: #e7e7e7; }
+.description p:nth-child(even)  { background-color: #fafafa; }
+.function_name                  { background-color: #f1f1f1; }
+
+/* fonts stuff */
+
+
+
+html, body          { font-family: Arial, sans-serif; text-align: justify; font-size: 16px; color: #000000; }
+
+a                   { text-decoration: none; color: #005f9c; }
+.description > a    { position: relative; top: 8px; left: calc(50% - 17px); }
+
+h1, h2, h3, h4      { text-align: center; color: #005f9c; }
+figcaption          { text-align: center; }
+p                   { text-align: justify; }
+
+.function_name      { font-style: italic; font-weight: bold; }
+.parameter          { font-style: italic; }
+.functionlist a     { font-style: italic; }
+h4                  { font-style: italic; }
+
+.menu               { text-align: center; font-weight: bold; }
