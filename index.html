@@ -13,7 +13,8 @@
 		<div class="menu">
 			<a href="what_can_i_do_with_it.html">What can I do with it?</a> |
 			<a href="index.html">API Reference</a> |
-			<a href="https://github.com/Tastenkunst" target="_blank">BRFv4 on Github</a>
+			<a href="https://github.com/Tastenkunst">BRFv4 on Github</a> |
+			<a href="https://tastenkunst.github.io/brfv4_javascript_examples/">JS Demo</a>
 		</div>
 	</div>
 	<div class="spacer"></div>
@@ -105,6 +106,40 @@
 
 	<div class="spacer"></div>
 
+	<h2 id="hl_BRFMode">BRFMode</h2>
+
+	<div class="spacer"></div>
+
+	<div class="description functionlist">
+		<p><a href="#mode_FACE_DETECTION">FACE_DETECTION</a></p>
+		<p><a href="#mode_FACE_TRACKING">FACE_TRACKING</a></p>
+		<p><a href="#mode_POINT_TRACKING">POINT_TRACKING</a></p>
+	</div>
+
+	<div class="spacer"></div>
+
+	<h2 id="hl_BRFState">BRFState</h2>
+
+	<div class="spacer"></div>
+
+	<div class="description functionlist">
+		<p><a href="#state_FACE_DETECTION">FACE_DETECTION</a></p>
+		<p><a href="#state_FACE_TRACKING_START">FACE_TRACKING_START</a></p>
+		<p><a href="#state_FACE_TRACKING">FACE_TRACKING</a></p>
+		<p><a href="#state_RESET">RESET</a></p>
+	</div>
+
+
+	<div class="spacer"></div>
+	<div class="description">
+		<a class="link_top" href="#wrapper">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+	<div class="spacer" style="background-color: transparent"></div>
+
+	<div class="spacer"></div>
+
 	<h2>BRFManager</h2>
 
 	<div class="spacer"></div>
@@ -178,10 +213,10 @@
 
 			It tells BRFv4 what image data size it should expect, on which area to operate and what your appId is.
 			<br><br>
-			If you want to switch the image data and thus need to change the image data size, just call init() again
+			If you want to switch the image data and thus need to change the image data size, just call <b>init()</b> again
 			to reinit BRFv4.<br><b>Don't create a new BRFManager! Reuse a single instance.</b><br><br>
 
-			When you first call init() a license check is performed. It's a single server call. If it fails in the trial version
+			When you first call <b>init()</b> a license check is performed. It's a single server call. If it fails in the trial version
 			BRFv4 will stop working after about 1 to 2 minutes. The commercial version is fail safe,
 			which means that even if no connection to the license server can be established, BRFv4 will still work.
 			Apart from that BRFv4 works fully on the client side.
@@ -221,7 +256,7 @@
 			All other platforms have their known image containers and BRFv4 is already set up to deal with those.
 			<br><br>
 
-			The results can be retrieved after calling update() as arrays of Rectangle or BRFFace:
+			The results can be retrieved after calling <b>update()</b> as arrays of Rectangle or BRFFace:
 			<br><br>
 
 			<b>getAllDetectedFaces() : Vector&lt;Rectangle&gt;</b><br>
@@ -403,7 +438,8 @@
 		<p class="function_description">
 			By setting these parameters you can control the conditions for picking up a face. Restrict the distance/range to
 			the camera by setting minWidth and maxWidth. Smaller values mean more distance to the camera. Restricting
-			the starting angles may help to create a consistent user experience.
+			the starting angles may help to create a consistent user experience.<br><br>
+			Keep the minWidth and maxWidth values about the same as for the params set in <b>setFaceDetectionParams()</b>;
 		</p>
 		<dl>
 			<dt class="parameter">minWidth (double)</dt>
@@ -490,7 +526,7 @@
 
 		<p class="function_name" id="addOpticalFlowPoints">addOpticalFlowPoints( Vector&lt;Point&gt; pointArray ) : void</p>
 		<p class="function_description">
-			Adds new points to track. This should be done synchronously right before calling update(). If you call this method in the middle
+			Adds new points to track. This should be done synchronously right before calling <b>update()</b>. If you call this method in the middle
 			of an update call, eg. by doing so in a click/touch handler, the tracking might get confused.
 		</p>
 		<dl>
@@ -558,149 +594,332 @@
 		<br>
 	</div>
 
-	<!--
 
 
+	<div class="spacer"></div>
 
+	<h2>BRFFace</h2>
 
-		<p>and for the facial data:</p>
-		<br/>
+	<div class="spacer"></div>
 
-		<h3>BRFFace</h3>
+	<div class="description">
+		<p>
+			BRFFace holds all information about a tracked face. BRFv4 is now able to track more than one face, so every
+			BRFFace has it's individual state.
+			<br><br>
+			Compared to BRFv3 there was a change on how the vertices are laid out.<br><br>
+			<img src="assets/brfv4_landmarks.jpg" alt="BRFv4 landmarks." width="480" height="360"/><br><br>
+			The origin for the 3D transformation (scale, translationX, translationY, rotationX, rotationY, rotationZ)
+			is right behind vertex index 27 (top of the nose). So if you want to put a 3D object or PNG file on top of a
+			tracked face you know exactly where to position it.
+		</p>
+	</div>
 
-		<p class="function_name" id="lastState">String lastState; <span>&emsp;&emsp;// see BRFState</span></p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+	<div class="description">
+
+		<p class="function_name" id="lastState"><b>lastState (String)</b></p>
+		<p class="function_description">
+			The last state this face was in before calling update. See BRFState.
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="state">String state;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+	<div class="description">
+
+		<p class="function_name" id="state"><b>state (String)</b></p>
+		<p class="function_description">
+			The state this face is currently in. See BRFState.
+		</p>
+		<dl>
+			<dt class="parameter">BRFState.RESET</dt>
+			<dd>This face was reset because of a call to reset or because it exceeded the reset parameters.</dd>
+
+			<dt class="parameter">BRFState.FACE_DETECTION</dt>
+			<dd>BRFv4 is looking for a face, still nothing found.</dd>
+
+			<dt class="parameter">BRFState.FACE_TRACKING_START</dt>
+			<dd>
+				BRFv4 found a face and tries to align the face tracking to the found face. In this state the candide3
+				model and 3D position might not be correct yet.
+			</dd>
+
+			<dt class="parameter">BRFState.FACE_TRACKING</dt>
+			<dd>BRFv4 aligned the face and tracks it.</dd>
+		</dl>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="nextState">String nextState;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+	<div class="description">
+
+		<p class="function_name" id="nextState"><b>nextState (String)</b></p>
+		<p class="function_description">
+			The next thing BRF does with this faces. See BRFState.
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<br/>
+	<div class="description">
 
-		<p class="function_name" id="vertices">float[] vertices; <span>&emsp;&emsp;[x, y, x, y, ..., x, y] // length: 68 * 2</span></p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+		<p class="function_name" id="vertices"><b>vertices (float[])</b></p>
+		<p class="function_description">
+			A list of vertex positions in the form of [x, y, x, y, ..., x, y], length is therefore: 68 * 2<br><br>
+			<img src="assets/brfv4_landmarks.jpg" alt="BRFv4 landmarks." width="480" height="360"/><br><br>
+			Getting the position of a certain vertex would be like:
+			<br><br>
+			<b>var vx = vertices[index * 2];</b> // where index is eg. 27 for the top of the nose.<br>
+			<b>var vy = vertices[index * 2 + 1];</b><br>
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="triangles">int[] triangles;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+	<div class="description">
+
+		<p class="function_name" id="triangles"><b>triangles (int[])</b></p>
+		<p class="function_description">
+			The vertices can be connected and triangles can be formed. This is the index list for the triangles.
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="points">Vector&lt;Point&gt; points; <span>&emsp;&emsp;// same as vertices, but [{x, y}, {x, y}, ..., {x, y}] // length: 68</span></p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+	<div class="description">
+
+		<p class="function_name" id="points"><b>points (Vector&lt;Point&gt;)</b></p>
+		<p class="function_description">
+			Same as vertices, but a list of points in the form of [{x, y}, {x, y}, ..., {x, y}], length is therefore: 68
+			<br><br>
+			Getting the position of a certain point would be like:
+			<br><br>
+			<b>var px = points[index].x;</b> // where index is eg. 27 for the top of the nose.<br>
+			<b>var py = points[index].y;</b><br>
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="bounds">Rectangle bounds;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+	<div class="description">
+
+		<p class="function_name" id="bounds"><b>bounds (Rectangle)</b></p>
+		<p class="function_description">
+			This is the outline rectangle of all vertices.
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="refRect">Rectangle refRect;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+	<div class="description">
+
+		<p class="function_name" id="refRect"><b>refRect (Rectangle)</b></p>
+		<p class="function_description">
+			This is the reference rectangle that the face tracking algorithm uses to perform the tracking.
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<br/>
+	<div class="description">
 
-		<p class="function_name" id="candideVertices">float[] candideVertices;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+		<p class="function_name" id="candideVertices"><b>candideVertices (float[])</b></p>
+		<p class="function_description">
+			The candide 3 model vertices. Can be used to visualize the 3D position, scaling and rotation.
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="candideTriangles">int[] candideTriangles;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+	<div class="description">
+
+		<p class="function_name" id="candideTriangles"><b>candideTriangles (int[])</b></p>
+		<p class="function_description">
+			Triangle list to be able to draw the candide 3 model.
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<br/>
+	<div class="description">
 
-		<p class="function_name" id="scale">float scale;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+		<p class="function_name" id="scale"><b>scale (float)</b></p>
+		<p class="function_description">
+			The scale of the whole face.
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="translationX">float translationX;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
-		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+	<div class="description">
 
-		<p class="function_name" id="translationY">float translationY;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+		<p class="function_name" id="translationX"><b>translationX (float)</b></p>
+		<p class="function_description">
+			The x position the origin of face on the image. The origin is right behind vertex index 27 (top of the nose).
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="rotationX">float rotationX;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
-		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+	<div class="description">
 
-		<p class="function_name" id="rotationY">float rotationY;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+		<p class="function_name" id="translationY"><b>translationY (float)</b></p>
+		<p class="function_description">
+			The y position the origin of face on the image. The origin is right behind vertex index 27 (top of the nose).
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
+		<br>
+		<br>
+	</div>
 
-		<p class="function_name" id="rotationZ">float rotationZ;</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<br/>
+	<div class="description">
+
+		<p class="function_name" id="rotationX"><b>rotationX (float)</b></p>
+		<p class="function_description">
+			A radian angle. Rotation around the X axis (pitch, turning head up/down)
+		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>-->
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="rotationY"><b>rotationY (float)</b></p>
+		<p class="function_description">
+			A radian angle. Rotation around the Y axis (yaw, turning head to the left/right)
+		</p>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="rotationZ"><b>rotationZ (float)</b></p>
+		<p class="function_description">
+			A radian angle. Rotation around the Z axis (roll, tilt head to the left/right)
+		</p>
+		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="spacer"></div>
+
+	<h2>BRFMode</h2>
+
+	<div class="spacer"></div>
+
+	<div class="description">
+		<p>
+			BRFv4 can operate in either of the following modes.
+		</p>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="mode_FACE_DETECTION"><b>FACE_DETECTION (String)</b></p>
+		<p class="function_description">
+			Set this mode if you want to skip the face tracking part and only detect face rectangles. Point tracking can
+			also be done in parallel.
+		</p>
+		<a class="link_top" href="#hl_BRFMode">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="mode_FACE_TRACKING"><b>FACE_TRACKING (String)</b></p>
+		<p class="function_description">
+			Set this mode if you want the full face detection and face tracking. Point tracking can
+			also be done in parallel.
+		</p>
+		<a class="link_top" href="#hl_BRFMode">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="mode_POINT_TRACKING"><b>POINT_TRACKING (String)</b></p>
+		<p class="function_description">
+			Set this mode if you want to skip face detection and face tracking and only track points.
+		</p>
+		<a class="link_top" href="#hl_BRFMode">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="spacer"></div>
+
+	<h2>BRFState</h2>
+
+	<div class="spacer"></div>
+
+	<div class="description">
+		<p>
+			A BRFFace can be in one of the following states.
+		</p>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="state_FACE_DETECTION"><b>FACE_DETECTION (String)</b></p>
+		<p class="function_description">
+			The BRFFace tried to initially detect a face in the image data.
+		</p>
+		<a class="link_top" href="#hl_BRFState">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="state_FACE_TRACKING_START"><b>FACE_TRACKING_START (String)</b></p>
+		<p class="function_description">
+			The BRFFace found a face in the image data and tries to align the face tracking.
+		</p>
+		<a class="link_top" href="#hl_BRFState">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="state_FACE_TRACKING"><b>FACE_TRACKING (String)</b></p>
+		<p class="function_description">
+			The BRFFace is tracking the face in the image data.
+		</p>
+		<a class="link_top" href="#hl_BRFState">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="state_RESET"><b>RESET (String)</b></p>
+		<p class="function_description">
+			The BRFFace triggered a reset, either because of a call to <b>BRFManager.reset()</b> or because
+			it exceeds the reset parameters set in <b>BRFManager.setFaceTrackingResetParams()</b>;
+		</p>
+		<a class="link_top" href="#hl_BRFState">&uarr; top</a>
+		<br>
+		<br>
+	</div>
 
 	<div class="spacer"></div>
 	<div class="description">
