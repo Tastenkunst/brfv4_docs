@@ -384,9 +384,9 @@
 
 		<p class="function_name" id="setNumFacesToTrack">setNumFacesToTrack( int numFaces ) : void</p>
 		<p class="function_description">
-			By default BRFv4 set the number of faces to track to 1 (single face tracking). To track more than one face
+			By default BRFv4 sets the number of faces to track to 1 (single face tracking). To track more than one face
 			increase this value. Be aware that increasing the number of faces to track will hurt the performance with
-			every single face you add.
+			every face you add.
 		</p>
 		<dl>
 			<dt class="parameter">numFaces (int)</dt>
@@ -397,167 +397,171 @@
 		<br>
 	</div>
 
+	<div class="description">
+
+		<p class="function_name" id="setFaceTrackingStartParams">setFaceTrackingStartParams( double minWidth, double maxWidth, double rx, double ry, double rz ) : void</p>
+		<p class="function_description">
+			By setting these parameters you can control the conditions for picking up a face. Restrict the distance/range to
+			the camera by setting minWidth and maxWidth. Smaller values mean more distance to the camera. Restricting
+			the starting angles may help to create a consistent user experience.
+		</p>
+		<dl>
+			<dt class="parameter">minWidth (double)</dt>
+			<dd>A pixel based value. The minimum size a face must have to be picked up.</dd>
+			<dt class="parameter">maxWidth (double)</dt>
+			<dd>A pixel based value. The maximum size a face can have to be picked up.</dd>
+			<dt class="parameter">rx (double)</dt>
+			<dd>A degree angle. Rotation around the X axis (pitch, turning head up/down)</dd>
+			<dt class="parameter">ry (double)</dt>
+			<dd>A degree angle. Rotation around the Y axis (yaw, turning head to the left/right)</dd>
+			<dt class="parameter">rz (double)</dt>
+			<dd>A degree angle. Rotation around the Z axis (roll, tilt head to the left/right)</dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="setFaceTrackingResetParams">setFaceTrackingResetParams( double minWidth, double maxWidth, double rx, double ry, double rz ) : void</p>
+		<p class="function_description">
+			By setting these parameters you can control the conditions for resetting the tracking of a face. If a face gets
+			smaller than minWidth or larger than maxWidth or if the head turns more than rx, ry, or rz, the tracking will reset.
+		</p>
+		<dl>
+			<dt class="parameter">minWidth (double)</dt>
+			<dd>A pixel based value. Faces smaller than this value will trigger a reset of the tracking.</dd>
+			<dt class="parameter">maxWidth (double)</dt>
+			<dd>A pixel based value. Faces larger than this value will trigger a reset of the tracking.</dd>
+			<dt class="parameter">rx (double)</dt>
+			<dd>A degree angle. Rotation around the X axis (pitch, turning head up/down).</dd>
+			<dt class="parameter">ry (double)</dt>
+			<dd>A degree angle. Rotation around the Y axis (yaw, turning head to the left/right)</dd>
+			<dt class="parameter">rz (double)</dt>
+			<dd>A degree angle. Rotation around the Z axis (roll, tilt head to the left/right)</dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="getFaces">getFaces( ) : Vector&lt;BRFFace&gt;</p>
+		<p class="function_description">
+			Returns the list of currently tracked faces. Please see <a href="#hl_BRFFace">BRFFace</a> for details.
+		</p>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<h4>point tracking</h4>
+
+	<div class="description">
+
+		<p class="function_name" id="setOpticalFlowParams">setOpticalFlowParams( int patchSize, int numLevels, int numIterations, double error ) : void</p>
+		<p class="function_description">
+			Optical Flow is a point tracking algorithm. It is used in BRFv4 to stabilize fast movements. You can perform
+			this point tracking either standalone by setting BRFMode.POINT_TRACKING or in parallel by setting either of
+			the other two modes.
+		</p>
+		<dl>
+			<dt class="parameter">patchSize (int)</dt>
+			<dd>
+				This is the area around a point that is used to compare to the new image. Has to be an odd number.
+				Larger values will decrease performance. Lower values will decrease accuracy. 21 (10 pixels on in each direction)
+				is a good default value.
+			</dd>
+			<dt class="parameter">numLevels (int)</dt>
+			<dd>The number of pyramid levels to use. Either 1, 2, 3 or 4 (default). Lower values will decrease accuracy.</dd>
+			<dt class="parameter">numIterations (int)</dt>
+			<dd>The maximum number of iterations to perform the search.</dd>
+			<dt class="parameter">error (double)</dt>
+			<dd>Usually smaller than 0.0001. Higher values will decrease accuracy.</dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="addOpticalFlowPoints">addOpticalFlowPoints( Vector&lt;Point&gt; pointArray ) : void</p>
+		<p class="function_description">
+			Adds new points to track. This should be done synchronously right before calling update(). If you call this method in the middle
+			of an update call, eg. by doing so in a click/touch handler, the tracking might get confused.
+		</p>
+		<dl>
+			<dt class="parameter">pointArray (Vector&lt;Point&gt;)</dt>
+			<dd>
+				A list of points to add to the optical flow tracking.
+			</dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="getOpticalFlowCheckPointsValidBeforeTracking">getOpticalFlowCheckPointsValidBeforeTracking() : Boolean</p>
+		<p class="function_description">
+			Returns whether BRF will check whether the points are valid or not.
+		</p>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="setOpticalFlowCheckPointsValidBeforeTracking">setOpticalFlowCheckPointsValidBeforeTracking( Boolean value ) : void</p>
+		<p class="function_description">
+			Sets whether BRF will check whether the points are valid or not. In continuous point tracking there will be
+			points that fail to be tracked. Their state will be false after an update call. As a developer you can react
+			on failed points by checking the state. If you wish that BRF removes failed points right before the next
+			tracking, set this value to true. If you wish to handle the removal or resetting of points yourself, set
+			this value to false.
+		</p>
+		<dl>
+			<dt class="parameter">value (Boolean)</dt>
+			<dd>
+				true or false
+			</dd>
+		</dl>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="getOpticalFlowPoints">getOpticalFlowPoints() : Vector&lt;Point&gt;</p>
+		<p class="function_description">
+			Returns all currently tracked points.
+		</p>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
+	<div class="description">
+
+		<p class="function_name" id="getOpticalFlowPointStates">getOpticalFlowPointStates() : Vector&lt;Boolean&gt;</p>
+		<p class="function_description">
+			Returns the states of all currently tracked points.
+		</p>
+		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
+		<br>
+		<br>
+	</div>
+
 	<!--
 
 
 
-
-		<p class="function_name" id="setNumFacesToTrack">void setNumFacesToTrack(int numFaces)</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="parameter">numFaces</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<p class="function_name" id="setFaceTrackingStartParams">void setFaceTrackingStartParams(double startMinFaceWidth, double startMaxFaceWidth, double startRotationX, double startRotationY, double startRotationZ)</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="parameter">startMinFaceWidth</dt>
-			<dd>description</dd>
-			<dt class="parameter">startMaxFaceWidth</dt>
-			<dd>description</dd>
-			<dt class="parameter">startRotationX</dt>
-			<dd>description</dd>
-			<dt class="parameter">startRotationY</dt>
-			<dd>description</dd>
-			<dt class="parameter">startRotationZ</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<p class="function_name" id="setFaceTrackingResetParams">void setFaceTrackingResetParams(double resetMinFaceWidth, double resetMaxFaceWidth, double resetRotationX, double resetRotationY, double resetRotationZ)</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="parameter">resetMinFaceWidth</dt>
-			<dd>description</dd>
-			<dt class="parameter">resetMaxFaceWidth</dt>
-			<dd>description</dd>
-			<dt class="parameter">resetRotationX</dt>
-			<dd>description</dd>
-			<dt class="parameter">resetRotationY</dt>
-			<dd>description</dd>
-			<dt class="parameter">resetRotationZ</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<br/>
-
-		<p class="function_name" id="getFaces">Vector&lt;BRFFace&gt; getFaces()</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="ausgabe">Vector&lt;BRFFace&gt;</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<br/>
-
-		<p>//<br/>
-			// Optical Flow<br/>
-			//
-		</p>
-		<br/>
-
-		<p class="function_name" id="setOpticalFlowParams">void setOpticalFlowParams(int patchSize, int numLevels, int numIterations, double error)</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="parameter">patchSize</dt>
-			<dd>description</dd>
-			<dt class="parameter">numLevels</dt>
-			<dd>description</dd>
-			<dt class="parameter">numIterations</dt>
-			<dd>description</dd>
-			<dt class="parameter">error</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<p class="function_name" id="getOpticalFlowCheckPointsValidBeforeTracking">boolean getOpticalFlowCheckPointsValidBeforeTracking()</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="ausgabe">boolean</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<p class="function_name" id="setOpticalFlowCheckPointsValidBeforeTracking">void setOpticalFlowCheckPointsValidBeforeTracking(boolean value)</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="parameter">value</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<p class="function_name" id="addOpticalFlowPoints">void addOpticalFlowPoints(Vector&lt;Point&gt; pointArray)</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="parameter">pointArray</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<br/>
-
-		<p class="function_name" id="getOpticalFlowPoints">Vector&lt;Point&gt; getOpticalFlowPoints()</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="ausgabe">Vector&lt;Point&gt;</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<p class="function_name" id="getOpticalFlowPointStates">Vector&lt;Boolean&gt; getOpticalFlowPointStates()</p>
-		<p class="function_description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-		<dl>
-			<dt class="ausgabe">Vector&lt;Boolean&gt;</dt>
-			<dd>description</dd>
-		</dl>
-		<br/>
-		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
-		<br/>
-		<br/>
-		<br/>
-
-		<br/>
-		<br/>
 
 		<p>and for the facial data:</p>
 		<br/>
