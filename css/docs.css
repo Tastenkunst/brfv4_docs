@@ -37,6 +37,7 @@ html, body                      { background-color: #ffffff; }
 h1, h2, h3, h4                  { background-color: #fafafa; }
 .images                         { background-color: #fafafa; }
 .spacer                         { background-color: #fafafa; }
+.white                          { background-color: #ffffff; }
 .description                    { background-color: #e7e7e7; }
 .description p:nth-child(odd)   { background-color: #e7e7e7; }
 .description p:nth-child(even)  { background-color: #fafafa; }
