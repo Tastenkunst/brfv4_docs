@@ -157,7 +157,7 @@
 			<b>init( ... )</b>
 			<br><br>
 
-			Based on the image size the SDK sets reasonable default parameters to start a single face tracking,
+			Based on the image size the SDK sets reasonable default parameters to start tracking a single face,
 			but you can change any parameter once BRFv4 is ready. Keep in mind that most parameters are pixel values
 			and you need to adjust parameters based on the image data size that you put in, eg.
 			<br><br>
@@ -314,7 +314,7 @@
 
 			<dt class="parameter">BRFMode.FACE_TRACKING</dt>
 			<dd>This is the usual mode for face tracking. It performs face detection to find a face and then tracks
-				the facial features in details.</dd>
+				the facial features in detail.</dd>
 
 			<dt class="parameter">BRFMode.POINT_TRACKING</dt>
 			<dd>This mode will skip on face detection and tracking and only perform point tracking. You can perform
@@ -371,7 +371,7 @@
 			<dd>The end/maximum face size (in pixel) that the algorithm is looking for.</dd>
 
 			<dt class="parameter">stepSize (int)</dt>
-			<dd>Minimum step size is 12, must be a multiple of 12 (12, 24, 26 etc.). By increasing the stepSize you skip detection layers and make the face detection less accurate, but perform faster.</dd>
+			<dd>Minimum step size is 12, must be a multiple of 12 (12, 24, 36 etc.). By increasing the stepSize you skip detection layers and make the face detection less accurate, but perform faster.</dd>
 
 			<dt class="parameter">minMergeNeighbors (int)</dt>
 			<dd>Number of candidates (blue) necessary in one spot to merge all of them into a "detected face" (yellow).</dd>
@@ -505,7 +505,7 @@
 		<p class="function_name" id="setOpticalFlowParams">setOpticalFlowParams( int patchSize, int numLevels, int numIterations, double error ) : void</p>
 		<p class="function_description">
 			Optical Flow is a point tracking algorithm. It is used in BRFv4 to stabilize fast movements. You can perform
-			this point tracking either standalone by setting BRFMode.POINT_TRACKING or in parallel by setting either of
+			this point tracking either standalone by setting BRFMode.POINT_TRACKING or in parallel by setting either one of
 			the other two modes.
 		</p>
 		<dl>
@@ -549,7 +549,7 @@
 
 		<p class="function_name" id="getOpticalFlowCheckPointsValidBeforeTracking">getOpticalFlowCheckPointsValidBeforeTracking() : Boolean</p>
 		<p class="function_description">
-			Returns whether BRF will check whether the points are valid or not.
+			Returns whether BRF will check the validity of points.
 		</p>
 		<a class="link_top" href="#hl_BRFManager">&uarr; top</a>
 		<br>
@@ -560,7 +560,7 @@
 
 		<p class="function_name" id="setOpticalFlowCheckPointsValidBeforeTracking">setOpticalFlowCheckPointsValidBeforeTracking( Boolean value ) : void</p>
 		<p class="function_description">
-			Sets whether BRF will check whether the points are valid or not. In continuous point tracking there will be
+			Sets whether BRF will check the validity of points. In continuous point tracking there will be
 			points that fail to be tracked. Their state will be false after an update call. As a developer you can react
 			on failed points by checking the state. If you wish that BRF removes failed points right before the next
 			tracking, set this value to true. If you wish to handle the removal or resetting of points yourself, set
@@ -610,7 +610,8 @@
 	<div class="description">
 		<p>
 			BRFFace holds all information about a tracked face. BRFv4 is now able to track more than one face, so every
-			BRFFace has it's individual state.
+			BRFFace has it's individual state. These states are being set automatically by BRFv4 depending on what it
+			currently does.
 			<br><br>
 			Compared to BRFv3 there was a change on how the vertices are laid out.<br><br>
 			<img src="assets/brfv4_landmarks.jpg" alt="BRFv4 landmarks." style="width: 480px; max-width: 100%;"/><br><br>
@@ -635,7 +636,7 @@
 
 		<p class="function_name" id="state"><b>state (String)</b></p>
 		<p class="function_description">
-			The state this face is currently in. See BRFState.
+			The state this face is currently in. Either one of the following BRFStates:
 		</p>
 		<dl>
 			<dt class="parameter">BRFState.RESET</dt>
@@ -646,12 +647,12 @@
 
 			<dt class="parameter">BRFState.FACE_TRACKING_START</dt>
 			<dd>
-				BRFv4 found a face and tries to align the face tracking to the found face. In this state the candide3
+				BRFv4 found a face and tries to align the face tracking to the identified face. In this state the candide3
 				model and 3D position might not be correct yet.
 			</dd>
 
 			<dt class="parameter">BRFState.FACE_TRACKING</dt>
-			<dd>BRFv4 aligned the face and tracks it.</dd>
+			<dd>BRFv4 aligned the face and is now tracking it.</dd>
 		</dl>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
 		<br>
@@ -689,7 +690,8 @@
 
 		<p class="function_name" id="triangles"><b>triangles (int[])</b></p>
 		<p class="function_description">
-			The vertices can be connected and triangles can be formed. This is the index list for the triangles.
+			The vertices can be connected and triangles can be formed.<br><br>This is the vertex index list for the triangles
+			int the following form: [i0, i1, i2, i0, i1, i2, ... , i0, i1, i2] where 3 indices span a triangle.
 		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
 		<br>
@@ -771,7 +773,7 @@
 
 		<p class="function_name" id="translationX"><b>translationX (float)</b></p>
 		<p class="function_description">
-			The x position the origin of face on the image. The origin is right behind vertex index 27 (top of the nose).
+			The x position of the origin of face on the image. The origin is right behind vertex index 27 (top of the nose).
 		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
 		<br>
@@ -782,7 +784,7 @@
 
 		<p class="function_name" id="translationY"><b>translationY (float)</b></p>
 		<p class="function_description">
-			The y position the origin of face on the image. The origin is right behind vertex index 27 (top of the nose).
+			The y position of the origin of face on the image. The origin is right behind vertex index 27 (top of the nose).
 		</p>
 		<a class="link_top" href="#hl_BRFFace">&uarr; top</a>
 		<br>
@@ -839,7 +841,7 @@
 		<p class="function_name" id="mode_FACE_DETECTION"><b>FACE_DETECTION (String)</b></p>
 		<p class="function_description">
 			Set this mode if you want to skip the face tracking part and only detect face rectangles. Point tracking can
-			also be done in parallel.
+			also be done synchronously.
 		</p>
 		<a class="link_top" href="#hl_BRFMode">&uarr; top</a>
 		<br>
@@ -851,7 +853,7 @@
 		<p class="function_name" id="mode_FACE_TRACKING"><b>FACE_TRACKING (String)</b></p>
 		<p class="function_description">
 			Set this mode if you want the full face detection and face tracking. Point tracking can
-			also be done in parallel.
+			also be done synchronously.
 		</p>
 		<a class="link_top" href="#hl_BRFMode">&uarr; top</a>
 		<br>
@@ -927,12 +929,7 @@
 	</div>
 
 	<div class="spacer"></div>
-	<div class="description">
-		<a class="link_top" href="#wrapper">&uarr; top</a>
-		<br>
-		<br>
-	</div>
-	<div class="spacer"></div>
+
 </div>
 </body>
 </html>
